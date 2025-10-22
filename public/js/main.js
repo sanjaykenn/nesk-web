@@ -3,9 +3,42 @@ import * as wasm from "../pkg/nesk_web.js";
 const WIDTH = 256;
 const HEIGHT = 240;
 let nes_interval_id = undefined;
+let player1_keys = {
+    ' ': 0,        // A
+    'SHIFT': 1,        // B
+    'CONTROL': 2,    // Select
+    'ENTER': 3,    // Start
+    'W': 4,  // Up
+    'S': 5, // Down
+    'A': 6, // Left
+    'D': 7 // Right
+};
+
+let player2_keys = {
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
     await wasm.default();
+
+    document.addEventListener('keydown', (event) => {
+        if (player1_keys.hasOwnProperty(event.key.toUpperCase())) {
+            wasm.press_button(0, player1_keys[event.key.toUpperCase()]);
+        }
+
+        if (player2_keys.hasOwnProperty(event.key.toUpperCase())) {
+            wasm.press_button(1, player2_keys[event.key.toUpperCase()]);
+        }
+    });
+
+    document.addEventListener('keyup', (event) => {
+        if (player1_keys.hasOwnProperty(event.key.toUpperCase())) {
+            wasm.release_button(0, player1_keys[event.key.toUpperCase()]);
+        }
+
+        if (player2_keys.hasOwnProperty(event.key.toUpperCase())) {
+            wasm.release_button(1, player2_keys[event.key.toUpperCase()]);
+        }
+    });
 
     document.querySelector("#file-input").addEventListener("change", function (e) {
         const reader = new FileReader();

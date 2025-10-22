@@ -2,10 +2,53 @@ use js_sys::Function;
 use nesk::{AVG_FPS, HEIGHT, NES, WIDTH};
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::sync::atomic::AtomicBool;
 use wasm_bindgen::closure::Closure;
 use wasm_bindgen::{JsCast, JsValue};
 use wasm_bindgen::prelude::wasm_bindgen;
 use web_sys::window;
+use lazy_static::lazy_static;
+
+lazy_static! {
+    pub static ref CONTROLLER1_BUTTONS: [AtomicBool; 8] = [
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+    ];
+    pub static ref CONTROLLER2_BUTTONS: [AtomicBool; 8] = [
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+        AtomicBool::new(false),
+    ];
+}
+
+#[wasm_bindgen]
+pub fn press_button(controller: i32, index: usize) {
+    match controller {
+        0 => CONTROLLER1_BUTTONS[index].store(true, std::sync::atomic::Ordering::SeqCst),
+        1 => CONTROLLER2_BUTTONS[index].store(true, std::sync::atomic::Ordering::SeqCst),
+        _ => {}
+    }
+}
+
+#[wasm_bindgen]
+pub fn release_button(controller: i32, index: usize) {
+    match controller {
+        0 => CONTROLLER1_BUTTONS[index].store(false, std::sync::atomic::Ordering::SeqCst),
+        1 => CONTROLLER2_BUTTONS[index].store(false, std::sync::atomic::Ordering::SeqCst),
+        _ => {}
+    }
+}
 
 #[wasm_bindgen]
 pub fn stop(interval_id: i32) {
@@ -18,6 +61,12 @@ pub fn run(rom: Box<[u8]>, render: Function) -> Result<i32, String> {
 
     let closure = Closure::wrap(Box::new(move || {
         let mut nes = nes.borrow_mut();
+
+        let controller_1 = CONTROLLER1_BUTTONS.iter().map(|button| button.load(std::sync::atomic::Ordering::SeqCst)).collect::<Vec<_>>().try_into().unwrap();
+        let controller_2 = CONTROLLER2_BUTTONS.iter().map(|button| button.load(std::sync::atomic::Ordering::SeqCst)).collect::<Vec<_>>().try_into().unwrap();
+
+        nes.load_buttons(controller_1, controller_2);
+
         let screen_output = loop {
             nes.tick();
             if let Some(screen_output) = nes.get_screen_output() {
