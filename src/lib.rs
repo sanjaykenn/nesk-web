@@ -8,6 +8,11 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use web_sys::window;
 
 #[wasm_bindgen]
+pub fn stop(interval_id: i32) {
+    window().unwrap().clear_interval_with_handle(interval_id);
+}
+
+#[wasm_bindgen]
 pub fn run(rom: Box<[u8]>, render: Function) -> Result<i32, String> {
     let mut nes = Rc::new(RefCell::new(NES::from_ines(&rom)?));
 
