@@ -64,7 +64,43 @@ document.addEventListener("DOMContentLoaded", async () => {
                 ctx.putImageData(imageData, 0, 0);
             }
 
-            nes_interval_id = wasm.run(romData, render);
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)({
+                sampleRate: 44100
+            });
+
+            let nextPlayTime = audioContext.currentTime;
+
+            function audio(samples) {
+                if (samples.length === 0) return;
+
+                // Create buffer for these samples
+                const buffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
+                const channelData = buffer.getChannelData(0);
+
+                for (let i = 0; i < samples.length; i++) {
+                    channelData[i] = samples[i];
+                }
+
+                const source = audioContext.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioContext.destination);
+
+                const currentTime = audioContext.currentTime;
+
+                if (nextPlayTime < currentTime) {
+                    nextPlayTime = currentTime;
+                }
+
+                source.start(nextPlayTime);
+
+                nextPlayTime += samples.length / audioContext.sampleRate;
+
+                if (nextPlayTime - currentTime > 0.1) {
+                    nextPlayTime = currentTime + 0.05;
+                }
+            }
+
+            nes_interval_id = wasm.run(romData, render, audio);
         }
 
         reader.readAsArrayBuffer(e.target.files[0]);

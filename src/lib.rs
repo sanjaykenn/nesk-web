@@ -56,7 +56,7 @@ pub fn stop(interval_id: i32) {
 }
 
 #[wasm_bindgen]
-pub fn run(rom: Box<[u8]>, render: Function) -> Result<i32, String> {
+pub fn run(rom: Box<[u8]>, render: Function, audio: Function) -> Result<i32, String> {
     let mut nes = Rc::new(RefCell::new(NES::from_ines(&rom)?));
 
     let closure = Closure::wrap(Box::new(move || {
@@ -85,6 +85,11 @@ pub fn run(rom: Box<[u8]>, render: Function) -> Result<i32, String> {
         let js_pixels = js_sys::Uint8Array::new_with_length(pixels.len() as u32);
         js_pixels.copy_from(&pixels);
         render.clone().call1(&JsValue::NULL, &js_pixels).unwrap();
+
+        let audio_samples = nes.get_speaker_output();
+        let audio_array = js_sys::Float64Array::new_with_length(audio_samples.len() as u32);
+        audio_array.copy_from(&audio_samples);
+        audio.clone().call1(&JsValue::NULL, &audio_array).unwrap();
     }) as Box<dyn FnMut()>);
 
     let window = window().unwrap();
