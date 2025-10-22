@@ -69,4 +69,40 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         reader.readAsArrayBuffer(e.target.files[0]);
     })
+
+    document.querySelectorAll(".control-settings").forEach(((element, index) => {
+        let controls = index === 0 ? player1_keys : player2_keys;
+        element.querySelectorAll(".control-setting").forEach((element, button) => {
+            let label = Object.keys(controls).find(key => controls[key] === button);
+            if (label === ' ') {
+                label = 'SPACE'
+            }
+
+            element.querySelector("input[type='button']").value = label ?? ""
+
+            element.querySelector("input[type='button']").addEventListener("click", (event) => {
+                event.target.classList.toggle("active")
+            })
+        })
+    }))
+
+    document.addEventListener('keydown', (event) => {
+        document.querySelectorAll(".control-settings").forEach(((element, index) => {
+            let controls = index === 0 ? player1_keys : player2_keys;
+            element.querySelectorAll(".control-setting").forEach((e, button) => {
+                let btn = e.querySelector("input[type='button']");
+                if (btn.classList.contains("active")) {
+                    let key = Object.keys(controls).find(key => controls[key] === button);
+                    if (key) {
+                        delete controls[key];
+                    }
+
+                    let newKey = event.key.toUpperCase();
+                    controls[newKey] = button;
+                    btn.value = newKey === " " ? "SPACE" : newKey;
+                    btn.classList.remove("active");
+                }
+            })
+        }))
+    });
 });

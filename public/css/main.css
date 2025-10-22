@@ -23,3 +23,54 @@
     image-rendering: crisp-edges;          /* fallback */
     image-rendering: -moz-crisp-edges;     /* Firefox legacy */
 }
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 100px;
+}
+
+.control-settings {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+
+    > .control-setting {
+        border-radius: 5px;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-between;
+        width: 10em;
+        
+        
+
+        > * {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            border: 1px solid lightgray;
+            padding: 4px;
+        }
+
+        > label {
+            border-right: none;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+        }
+
+        > input[type="button"] {
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+            background-color: #ccc;
+
+            &:hover {
+                background-color: lightgray;
+            }
+
+            &.active {
+                background-color: cornflowerblue;
+            }
+        }
+    }
+}
