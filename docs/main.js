@@ -1,4 +1,4 @@
-import * as wasm from "../pkg/nesk_ui.js";
+import * as wasm from "./pkg/nesk_web.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
     await wasm.default();
