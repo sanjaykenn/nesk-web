@@ -37,12 +37,12 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: '.'
+          path: 'public'
       - name: wasm-pack-action
         uses: jetli/wasm-pack-action@v0.4.0
       - name: Build WASM
         run: |
-          wasm-pack build --target web --out-dir docs/pkg
+          wasm-pack build --target web --out-dir public/pkg
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
