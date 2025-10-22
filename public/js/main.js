@@ -22,20 +22,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     document.addEventListener('keydown', (event) => {
         if (player1_keys.hasOwnProperty(event.key.toUpperCase())) {
+            event.preventDefault()
             wasm.press_button(0, player1_keys[event.key.toUpperCase()]);
         }
 
         if (player2_keys.hasOwnProperty(event.key.toUpperCase())) {
+            event.preventDefault()
             wasm.press_button(1, player2_keys[event.key.toUpperCase()]);
         }
     });
 
     document.addEventListener('keyup', (event) => {
         if (player1_keys.hasOwnProperty(event.key.toUpperCase())) {
+            event.preventDefault()
             wasm.release_button(0, player1_keys[event.key.toUpperCase()]);
         }
 
         if (player2_keys.hasOwnProperty(event.key.toUpperCase())) {
+            event.preventDefault()
             wasm.release_button(1, player2_keys[event.key.toUpperCase()]);
         }
     });
