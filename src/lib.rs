@@ -57,7 +57,7 @@ pub fn stop(interval_id: i32) {
 
 #[wasm_bindgen]
 pub fn run(rom: Box<[u8]>, render: Function, audio: Function) -> Result<i32, String> {
-    let mut nes = Rc::new(RefCell::new(NES::from_ines(&rom)?));
+    let nes = Rc::new(RefCell::new(NES::from_ines(&rom)?));
 
     let closure = Closure::wrap(Box::new(move || {
         let mut nes = nes.borrow_mut();
