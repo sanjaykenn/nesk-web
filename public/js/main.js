@@ -104,7 +104,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             }
 
-            nes_interval_id = wasm.run(romData, render, audio);
+            try {
+                nes_interval_id = wasm.run(romData, render, audio);
+            } catch (e) {
+                alert("Invalid or unsupported ROM file.")
+            }
         }
 
         reader.readAsArrayBuffer(e.target.files[0]);

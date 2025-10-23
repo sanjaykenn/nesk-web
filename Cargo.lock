@@ -39,7 +39,7 @@ checksum = "34080505efa8e45a4b816c349525ebe327ceaa8559756f0356cba97ef3bf7432"
 [[package]]
 name = "nesk"
 version = "0.1.0"
-source = "git+https://github.com/sanjaykenn/nesk.git?branch=main#f993e54980008096e7e0b283db4c619c842f806e"
+source = "git+https://github.com/sanjaykenn/nesk.git?branch=main#e55f6290e5fd073e6706a9edf1cc2b1d843b779a"
 
 [[package]]
 name = "nesk-web"
